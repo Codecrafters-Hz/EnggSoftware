@@ -86,7 +86,7 @@ def update_graph():
         ax.legend()
         canvas.draw()
         update_connectors()
-        time.sleep(0.5)
+        time.sleep(2)
 
 def update_connectors():
     """Simulate connector placement and force validation."""
