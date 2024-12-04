@@ -1,5 +1,5 @@
 import tkinter as tk
-from tkinter import ttk
+from tkinter import ttk, messagebox  # Added messagebox
 from matplotlib.figure import Figure
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 import time
@@ -22,9 +22,23 @@ def calculate_average(v1, v2):
     except ValueError:
         return "Invalid Input"
 
+def validate_force():
+    """Ensure the entered force does not exceed 10N."""
+    try:
+        entered_force = float(force_var.get())
+        if entered_force > 10:
+            messagebox.showerror("Invalid Force", "Entered force must not exceed 10N.")
+            return False
+        return True
+    except ValueError:
+        messagebox.showerror("Invalid Input", "Please enter a numeric value for the force.")
+        return False
+
 def start_calibration():
     """Start the calibration process."""
     global is_running
+    if not validate_force():
+        return  # Stop if force validation fails
     is_running = True
     status_var.set("Started")
     threading.Thread(target=update_graph, daemon=True).start()
