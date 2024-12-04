@@ -89,16 +89,15 @@ def update_graph():
         time.sleep(2)
 
 def update_connectors():
-    """Simulate connector placement and force validation."""
+    """Simulate connector placement and validate force against 10N."""
     for i in range(8):
         simulated_force = random.uniform(5, 85)  # Simulate force for each connector
-        force_diff = abs(simulated_force - force_ranges[i])
-        if force_diff <= 10:
-            connectors_status[i] = True
-            connector_labels[i].config(text=f"Connector {i+1}: OK ({simulated_force:.2f} N)", background="green")
-        else:
+        if simulated_force > 10:  # If force exceeds 10N
             connectors_status[i] = False
             connector_labels[i].config(text=f"Connector {i+1}: Not OK ({simulated_force:.2f} N)", background="red")
+        else:  # If force is 10N or less
+            connectors_status[i] = True
+            connector_labels[i].config(text=f"Connector {i+1}: OK ({simulated_force:.2f} N)", background="green")
 
 # GUI setup
 root = tk.Tk()
