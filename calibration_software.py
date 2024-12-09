@@ -1,4 +1,4 @@
-import tkinter as tk 
+import tkinter as tk
 from tkinter import ttk
 from matplotlib.figure import Figure
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
@@ -96,7 +96,7 @@ def real_time_monitoring():
         update_resistance_graph()
         update_force_bar_graph()
 
-        time.sleep(1.5)  # Update every 1.5 seconds
+        time.sleep(1)
 
 # Control Functions
 def start_monitoring():
@@ -106,7 +106,7 @@ def start_monitoring():
         return
     
     try:
-        force_value = float(force_entry.get())
+        force_value = float(force_entry.get())  # Use the force input for the selected connector type
         if force_value > MAX_FORCE:
             status_var.set(f"Error: Force value exceeds {MAX_FORCE} N limit.")
             force_entry.delete(0, tk.END)  # Clear the input field
@@ -144,6 +144,7 @@ def reset_monitoring():
     force_ax.clear()
     resistance_canvas.draw()
     force_canvas.draw()
+    force_entry.delete(0, tk.END)  # Clear the force entry field
     status_var.set("System Reset")
 
 def change_connector_type(selected_type):
@@ -178,22 +179,6 @@ def calculate_avg_voltage():
     except ValueError:
         status_var.set("Error: Please enter valid voltage values.")
 
-# Force Value Input Validation
-def validate_force_input(force_value):
-    """Validate the force input value."""
-    try:
-        force_value = float(force_value)
-        if force_value > MAX_FORCE:
-            status_var.set(f"Error: Force value cannot exceed {MAX_FORCE} N.")
-            force_entry.delete(0, tk.END)  # Clear the input field
-        else:
-            force_label.config(text=f"Force Value: {force_value:.2f} N")
-            force_values.append(force_value)  # Add the valid force value to the list
-            update_force_table(force_values)  # Update the force table
-            update_force_bar_graph()  # Update the bar graph
-    except ValueError:
-        status_var.set("Error: Please enter a valid force value.")
-
 # Voltage Input Fields Change Event
 def on_voltage_change(*args):
     """Automatically calculate average voltage when both voltages are entered."""
@@ -221,6 +206,14 @@ force_frame = ttk.LabelFrame(root, text="Force Table (Contact Points)")
 force_frame.pack(pady=10, padx=10, fill="x")
 initialize_contact_points()
 
+# Force Entry Box (Static for all connectors)
+force_input_frame = ttk.LabelFrame(root, text="Force Input")
+force_input_frame.pack(pady=10, padx=10, fill="x")
+force_label = ttk.Label(force_input_frame, text="Force Value:")
+force_label.grid(row=0, column=0, padx=10)
+force_entry = ttk.Entry(force_input_frame)
+force_entry.grid(row=0, column=1, padx=10)
+
 # Control Buttons
 control_frame = ttk.LabelFrame(root, text="Controls")
 control_frame.pack(pady=10, padx=10, fill="x")
@@ -241,14 +234,6 @@ voltage_2_entry.pack(side="left", padx=10)
 
 avg_voltage_label = ttk.Label(voltage_frame, text="Average Voltage: 0.00 V")
 avg_voltage_label.pack(side="left", padx=10)
-
-# Force Value Input
-force_frame = ttk.LabelFrame(root, text="Force Input")
-force_frame.pack(pady=10, padx=10, fill="x")
-force_label = ttk.Label(force_frame, text="Force Value: Not Measured", background="red", foreground="white")
-force_label.pack(side="left", padx=10)
-force_entry = ttk.Entry(force_frame)
-force_entry.pack(side="left", padx=10)
 
 # Graph Display Frames
 graph_frame = tk.Frame(root)
